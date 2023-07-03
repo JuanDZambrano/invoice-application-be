@@ -1,5 +1,7 @@
 from django.db import models
-from .constants import CATEGORY_CHOICES
+from .constants import (CATEGORY_CHOICES,
+                        CUSTOMER,
+                        PROVIDER)
 
 
 class Product(models.Model):
@@ -15,7 +17,7 @@ class Contact(models.Model):
 class Sale(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     customer = models.ForeignKey(Contact, on_delete=models.CASCADE, limit_choices_to={
-                                 'category': Contact.CUSTOMER})
+                                 'category': CUSTOMER})
     date = models.DateField()
     quantity = models.PositiveIntegerField()
 
@@ -23,7 +25,7 @@ class Sale(models.Model):
 class Debt(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     provider = models.ForeignKey(Contact, on_delete=models.CASCADE, limit_choices_to={
-                                 'category': Contact.PROVIDER})
+                                 'category': PROVIDER})
     date = models.DateField()
     amount = models.DecimalField(max_digits=6, decimal_places=2)
     due_date = models.DateField()
