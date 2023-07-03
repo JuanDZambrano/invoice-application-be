@@ -3,7 +3,8 @@ from .models import (Product,
                      Contact,
                      Sale,
                      Debt,
-                     Employee)
+                     Employee,
+                     EmployeeExpense,)
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -33,4 +34,10 @@ class DebtSerializer(serializers.ModelSerializer):
 class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
+        fields = '__all__'
+
+
+class EmployeeExpenseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmployeeExpense
         fields = '__all__'

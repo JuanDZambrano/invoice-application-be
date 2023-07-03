@@ -3,12 +3,14 @@ from .models import (Product,
                      Contact,
                      Sale,
                      Debt,
-                     Employee)
+                     Employee,
+                     EmployeeExpense,)
 from .serializers import (ProductSerializer,
                           ContactSerializer,
                           SaleSerializer,
                           DebtSerializer,
-                          EmployeeSerializer)
+                          EmployeeSerializer,
+                          EmployeeExpenseSerializer,)
 
 
 class ProductViewSet(viewsets.ModelViewSet):
@@ -34,3 +36,8 @@ class DebtViewSet(viewsets.ModelViewSet):
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
+
+
+class EmployeeExpenseViewSet(viewsets.ModelViewSet):
+    queryset = EmployeeExpense.objects.all()
+    serializer_class = EmployeeExpenseSerializer
