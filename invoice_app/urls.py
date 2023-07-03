@@ -1,4 +1,5 @@
 from django.urls import include, path
+from invoice_app.api_views import PLStatementView
 from rest_framework.routers import DefaultRouter
 from .views import (ProductViewSet,
                     ContactViewSet,
@@ -17,4 +18,5 @@ router.register(r'employee_expenses', EmployeeExpenseViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('pl_statement/', PLStatementView.as_view()),
 ]
