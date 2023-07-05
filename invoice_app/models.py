@@ -1,10 +1,8 @@
-from django.db import models
 from datetime import datetime
-from .constants import (
-    CATEGORY_CHOICES,
-    CUSTOMER,
-    PROVIDER
-)
+
+from django.db import models
+
+from .constants import CATEGORY_CHOICES, CUSTOMER, PROVIDER
 
 
 class Product(models.Model):
