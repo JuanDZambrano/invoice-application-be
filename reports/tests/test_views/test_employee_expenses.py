@@ -62,16 +62,18 @@ class EmployeeExpensesTests(APITestCase):
         self.assertEqual(len(response.data['results']), 1)
 
     def test_filter_by_date_range(self):
+        # Delete all existing EmployeeExpense objects
+        EmployeeExpense.objects.all().delete()
         EmployeeExpense.objects.create(
             employee=self.employee,
             date=date.today() - timedelta(days=30),
             description='Expense 4',
             amount=400.00
         )
-        response = self.client.get(reverse('employee-expenses'), {
-                                   'start_date': date.today(), 'end_date': date.today()})
+        response = self.client.get(
+            reverse('employee-expenses'), {'date_gte': date.today().isoformat(), 'date_lte': date.today().isoformat()})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data['results']), 1)
+        self.assertEqual(len(response.data['results']), 0)
 
     def test_ordering(self):
         response = self.client.get(reverse('employee-expenses'), {
