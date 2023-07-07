@@ -1,16 +1,10 @@
 from rest_framework import viewsets
-from .models import (Product,
-                     Contact,
-                     Sale,
-                     Debt,
-                     Employee,
-                     EmployeeExpense,)
-from .serializers import (ProductSerializer,
-                          ContactSerializer,
-                          SaleSerializer,
-                          DebtSerializer,
-                          EmployeeSerializer,
-                          EmployeeExpenseSerializer,)
+
+from .models import (Contact, Debt, Employee, EmployeeExpense, Invoice,
+                     Product, Sale)
+from .serializers import (ContactSerializer, DebtSerializer,
+                          EmployeeExpenseSerializer, EmployeeSerializer,
+                          InvoiceSerializer, ProductSerializer, SaleSerializer)
 
 
 class ProductViewSet(viewsets.ModelViewSet):
@@ -41,3 +35,8 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 class EmployeeExpenseViewSet(viewsets.ModelViewSet):
     queryset = EmployeeExpense.objects.all()
     serializer_class = EmployeeExpenseSerializer
+
+
+class InvoiceViewSet(viewsets.ModelViewSet):
+    queryset = Invoice.objects.all()
+    serializer_class = InvoiceSerializer

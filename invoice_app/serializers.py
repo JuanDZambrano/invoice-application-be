@@ -1,10 +1,7 @@
 from rest_framework import serializers
-from .models import (Product,
-                     Contact,
-                     Sale,
-                     Debt,
-                     Employee,
-                     EmployeeExpense,)
+
+from .models import (Contact, Debt, Employee, EmployeeExpense, Invoice,
+                     Product, Sale)
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -40,4 +37,10 @@ class EmployeeSerializer(serializers.ModelSerializer):
 class EmployeeExpenseSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmployeeExpense
+        fields = '__all__'
+
+
+class InvoiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Invoice
         fields = '__all__'

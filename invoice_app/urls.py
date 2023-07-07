@@ -1,12 +1,11 @@
 from django.urls import include, path
-from invoice_app.api_views import PLStatementView
 from rest_framework.routers import DefaultRouter
-from .views import (ProductViewSet,
-                    ContactViewSet,
-                    SaleViewSet,
-                    DebtViewSet,
-                    EmployeeViewSet,
-                    EmployeeExpenseViewSet)
+
+from invoice_app.api_views import PLStatementView
+
+from .views import (ContactViewSet, DebtViewSet, EmployeeExpenseViewSet,
+                    EmployeeViewSet, InvoiceViewSet, ProductViewSet,
+                    SaleViewSet)
 
 router = DefaultRouter()
 router.register(r'products', ProductViewSet)
@@ -15,6 +14,7 @@ router.register(r'sales', SaleViewSet)
 router.register(r'debts', DebtViewSet)
 router.register(r'employees', EmployeeViewSet)
 router.register(r'employee_expenses', EmployeeExpenseViewSet)
+router.register(r'invoices', InvoiceViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

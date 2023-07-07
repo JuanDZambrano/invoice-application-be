@@ -1,8 +1,10 @@
 from datetime import datetime
 
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
-from .constants import CATEGORY_CHOICES, CUSTOMER, PROVIDER
+from .constants import (CATEGORY_CHOICES, CUSTOMER, PAYMENT_METHOD_CHOICES,
+                        PROVIDER, STATUS_CHOICES)
 
 
 class Product(models.Model):
@@ -195,3 +197,64 @@ class EmployeeExpense(models.Model):
 
     def __str__(self):
         return f"Expense #{self.pk}"
+
+
+class Invoice(models.Model):
+
+    transaction_date = models.DateField(
+        verbose_name=_("Transaction Date"),
+        help_text=_("Enter the date of the transaction.")
+    )
+    contact = models.ForeignKey(
+        Contact,
+        on_delete=models.CASCADE,
+        verbose_name=_("Contact"),
+        help_text=_("Select the contact associated with the transaction.")
+    )
+    employee = models.ForeignKey(
+        Employee,
+        on_delete=models.CASCADE,
+        verbose_name=_("Employee"),
+        help_text=_("Select the employee associated with the transaction.")
+    )
+    payment_method = models.CharField(
+        max_length=20,
+        choices=PAYMENT_METHOD_CHOICES,
+        verbose_name=_("Payment Method"),
+        help_text=_("Select the payment method for the transaction.")
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='draft',
+        verbose_name=_("Status"),
+        help_text=_("Select the status of the invoice.")
+    )
+    transaction_number = models.CharField(
+        max_length=50,
+        unique=True,
+        verbose_name=_("Transaction Number"),
+        help_text=_("Unique transaction number."),
+        blank=True
+    )
+    sales = models.ManyToManyField(
+        Sale,
+        verbose_name=_("Sales"),
+        help_text=_("Select the sales associated with the invoice.")
+    )
+
+    class Meta:
+        verbose_name = _("invoice")
+        verbose_name_plural = _("invoices")
+        ordering = ["-transaction_date"]
+
+    def __str__(self):
+        return f"Invoice #{self.transaction_number}"
+
+    def save(self, *args, **kwargs):
+        if not self.transaction_number:
+            date_str = datetime.now().strftime('%Y%m%d')
+            unique_id = str(self.pk) if self.pk else str(
+                Invoice.objects.latest('id').id + 1)
+            self.transaction_number = f'INV-{date_str}-{unique_id}'
+        super().save(*args, **kwargs)

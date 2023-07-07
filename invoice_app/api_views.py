@@ -1,13 +1,11 @@
+from datetime import date, datetime
+
 from django.db.models import F, Sum
-from django.db.models.functions import Coalesce, ExtractYear, ExtractMonth
-from datetime import date
-from rest_framework.views import APIView
+from django.db.models.functions import Coalesce, ExtractMonth, ExtractYear
 from rest_framework.response import Response
-from .models import (EmployeeExpense,
-                     Sale,
-                     Debt,
-                     Employee)
-from datetime import datetime
+from rest_framework.views import APIView
+
+from .models import Debt, Employee, EmployeeExpense, Sale
 
 
 class PLStatementView(APIView):
@@ -44,8 +42,10 @@ class PLStatementView(APIView):
 
         # Calculate total employee expenses
         total_salaries = Employee.objects.annotate(
-            months_worked=ExtractYear(Coalesce('date_terminated', date.today())) - ExtractYear('date_hired') * 12
-            + ExtractMonth(Coalesce('date_terminated', date.today())) - ExtractMonth('date_hired')
+            months_worked=ExtractYear(
+                Coalesce('date_terminated', date.today())) - ExtractYear('date_hired') * 12
+            + ExtractMonth(Coalesce('date_terminated', date.today())
+                           ) - ExtractMonth('date_hired')
         ).aggregate(
             total_salaries=Sum(F('wage') * F('months_worked'))
         )['total_salaries'] or 0

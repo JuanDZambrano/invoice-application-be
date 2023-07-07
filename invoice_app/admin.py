@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from .models import Contact, Debt, Employee, EmployeeExpense, Product, Sale
+from .models import (Contact, Debt, Employee, EmployeeExpense, Invoice,
+                     Product, Sale)
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -27,9 +28,14 @@ class EmployeeExpenseAdmin(admin.ModelAdmin):
     list_display = [field.name for field in EmployeeExpense._meta.fields]
 
 
+class InvoiceAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in Invoice._meta.fields]
+
+
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Contact, ContactAdmin)
 admin.site.register(Sale, SaleAdmin)
 admin.site.register(Debt, DebtAdmin)
 admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(EmployeeExpense, EmployeeExpenseAdmin)
+admin.site.register(Invoice, InvoiceAdmin)
