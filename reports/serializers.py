@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from invoice_app.models import Debt, EmployeeExpense
+from invoice_app.models import Debt, EmployeeExpense, Sale
 
 
 class DebtSerializer(serializers.ModelSerializer):
@@ -20,6 +20,24 @@ class GroupedDebtSerializer(serializers.Serializer):
 
     class Meta:
         fields = ['provider__name', 'total_debt']
+
+
+class SaleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sale
+        fields = ['product', 'customer', 'date', 'quantity', 'total_price']
+
+
+class GroupedSaleSerializer(serializers.Serializer):
+    total_sales = serializers.DecimalField(max_digits=6, decimal_places=2)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.instance:
+            keys = self.instance[0].keys()
+            for key in keys:
+                self.fields[key] = serializers.CharField()
 
 
 class EmployeeExpenseSerializer(serializers.ModelSerializer):
