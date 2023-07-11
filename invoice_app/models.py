@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 
 from django.db import models
@@ -254,7 +255,7 @@ class Invoice(models.Model):
     def save(self, *args, **kwargs):
         if not self.transaction_number:
             date_str = datetime.now().strftime('%Y%m%d')
-            unique_id = str(self.pk) if self.pk else str(
-                Invoice.objects.latest('id').id + 1)
+            # Generate a 6-character UUID.
+            unique_id = str(uuid.uuid4().hex[:6]).upper()
             self.transaction_number = f'INV-{date_str}-{unique_id}'
         super().save(*args, **kwargs)
