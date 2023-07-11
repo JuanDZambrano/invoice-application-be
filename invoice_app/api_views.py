@@ -2,10 +2,13 @@ from datetime import date, datetime
 
 from django.db.models import F, Sum
 from django.db.models.functions import Coalesce, ExtractMonth, ExtractYear
+from django.http import HttpResponse
+from django.template.loader import get_template
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from weasyprint import HTML
 
-from .models import Debt, Employee, EmployeeExpense, Sale
+from .models import Debt, Employee, EmployeeExpense, Invoice, Sale
 
 
 class PLStatementView(APIView):
@@ -70,3 +73,15 @@ class PLStatementView(APIView):
                 sorted(data.items(), key=lambda item: item[1], reverse=True))
 
         return Response(data)
+
+
+def invoice_pdf(request, pk):
+    invoice = Invoice.objects.get(pk=pk)
+    domain = request.get_host()
+    template = get_template('invoice.html')
+    html = template.render({'invoice': invoice, 'domain': domain})
+    pdf = HTML(string=html).write_pdf()
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="invoice_{}.pdf"'.format(
+        invoice.transaction_number)
+    return response
