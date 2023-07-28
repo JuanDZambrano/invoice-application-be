@@ -5,13 +5,9 @@ name = "pypi"
 
 [packages]
 django = "*"
-django-filter = "*"
-djangorestframework = "*"
 psycopg2-binary = "*"
-weasyprint = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.11"
-python_full_version = "3.11.1"
