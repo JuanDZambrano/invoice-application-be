@@ -6,7 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONPATH=/
 
 # Set work directory
-WORKDIR /src
+WORKDIR /
 
 # Install dependencies
 RUN pip install --upgrade --no-cache-dir pipenv
