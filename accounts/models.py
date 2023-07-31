@@ -25,6 +25,9 @@ class Company(models.Model):
     def __repr__(self):
         return f"<Company: {self.name}>"
 
+    class Meta:
+        verbose_name_plural = "Companies"
+
 
 class CustomUser(AbstractUser):
     id = models.UUIDField(
