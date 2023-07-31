@@ -19,6 +19,12 @@ class Company(models.Model):
     email = models.EmailField(max_length=255)
     tax_id = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return f"<Company: {self.name}>"
+
 
 class CustomUser(AbstractUser):
     id = models.UUIDField(
@@ -29,3 +35,9 @@ class CustomUser(AbstractUser):
     user_type = models.CharField(max_length=2, choices=USER_TYPE_CHOICES)
 
     objects = CustomUserManager(company_model=Company)
+
+    def __str__(self):
+        return self.username
+
+    def __repr__(self):
+        return f"<CustomUser: {self.username}>"
