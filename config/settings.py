@@ -38,6 +38,7 @@ INSTALLED_APPS = [
 
     # Local
     "accounts.apps.AccountsConfig",
+    "business.apps.BusinessConfig",
 ]
 
 MIDDLEWARE = [
