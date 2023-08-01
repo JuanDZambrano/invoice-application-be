@@ -6,7 +6,7 @@ class CustomUserManager(BaseUserManager):
         self.company_model = company_model
         super().__init__()
 
-    def _create_user(self, username, email=None, password=None, **extra_fields):
+    def create_user(self, username, email=None, password=None, **extra_fields):
         if not email:
             raise ValueError('The Email field must be set')
         email = self.normalize_email(email)
@@ -32,4 +32,4 @@ class CustomUserManager(BaseUserManager):
             name='Default Company')
         extra_fields['company'] = company
 
-        return self._create_user(username, email, password, **extra_fields)
+        return self.create_user(username, email, password, **extra_fields)

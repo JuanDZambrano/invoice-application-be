@@ -32,12 +32,12 @@ class CustomUserTests(TestCase):
             username='superadmin',
             email='superadmin@email.com',
             password='testpass123',
-            company=self.company,
             user_type=USER_TYPE_CHOICES[0][0]
         )
+        default_company = Company.objects.get(name='Default Company')
         self.assertEqual(admin_user.username, 'superadmin')
         self.assertEqual(admin_user.email, 'superadmin@email.com')
-        self.assertEqual(admin_user.company, self.company)
+        self.assertEqual(admin_user.company, default_company)
         self.assertEqual(admin_user.user_type, USER_TYPE_CHOICES[0][0])
         self.assertTrue(admin_user.is_active)
         self.assertTrue(admin_user.is_staff)
