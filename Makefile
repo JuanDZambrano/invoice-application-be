@@ -17,3 +17,6 @@ makemigrations:
 
 migrate:
 		docker-compose exec web python manage.py migrate
+
+logs: 
+		docker-compose logs -f
