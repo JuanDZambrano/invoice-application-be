@@ -57,6 +57,8 @@ class Location(models.Model):
         editable=False)
     name = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
+    company = models.ForeignKey(
+        Company, on_delete=models.CASCADE, related_name='locations')
 
     def __str__(self):
         return self.name
