@@ -6,7 +6,7 @@ from django.utils import timezone
 from accounts.models import Company
 
 from .constants import (BILL_STATUS_CHOICES, BILL_TYPE_CHOICES,
-                        JOB_TYPE_CHOICES, ORDER_STATUS_CHOICES)
+                        ORDER_STATUS_CHOICES)
 from .models import (Bill, Category, Customer, Employee, Job, Location, Order,
                      OrderItem, Payment, Product)
 
@@ -37,11 +37,16 @@ class EmployeeTest(TestCase):
             email="testcompany@email.com",
             tax_id="123456789",
         )
+        cls.job = Job.objects.create(
+            name="Test Job",
+            remuneration=1000.00,
+            company=cls.company,
+        )
         cls.employee = Employee.objects.create(
             name="Test Employee",
             company=cls.company,
             email="testemployee@email.com",
-            job=JOB_TYPE_CHOICES[0][0],
+            job=cls.job,
         )
 
     def test_employee_creation(self):
