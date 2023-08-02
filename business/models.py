@@ -5,7 +5,27 @@ from django.db import models
 from accounts.models import Company
 
 from .constants import (BILL_STATUS_CHOICES, BILL_TYPE_CHOICES,
-                        JOB_TYPE_CHOICES, ORDER_STATUS_CHOICES)
+                        ORDER_STATUS_CHOICES)
+
+
+class Job(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False)
+    name = models.CharField(max_length=255)
+    remuneration = models.FloatField()
+    company = models.ForeignKey(
+        Company, on_delete=models.CASCADE, related_name='jobs')
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return f"<Job: {self.name}>"
+
+    class Meta:
+        verbose_name_plural = "Jobs"
 
 
 class Employee(models.Model):
@@ -17,7 +37,8 @@ class Employee(models.Model):
     company = models.ForeignKey(
         Company, on_delete=models.CASCADE, related_name='employees')
     email = models.EmailField()
-    job = models.CharField(max_length=2, choices=JOB_TYPE_CHOICES)
+    job = models.ForeignKey(
+        Job, null=True, on_delete=models.SET_NULL, related_name='jobs')
 
     def __str__(self):
         return self.name
@@ -45,26 +66,6 @@ class Location(models.Model):
 
     class Meta:
         verbose_name_plural = "Locations"
-
-
-class Job(models.Model):
-    id = models.UUIDField(
-        primary_key=True,
-        default=uuid.uuid4,
-        editable=False)
-    name = models.CharField(max_length=255)
-    remuneration = models.FloatField()
-    company = models.ForeignKey(
-        Company, on_delete=models.CASCADE, related_name='jobs')
-
-    def __str__(self):
-        return self.name
-
-    def __repr__(self):
-        return f"<Job: {self.name}>"
-
-    class Meta:
-        verbose_name_plural = "Jobs"
 
 
 class Customer(models.Model):
@@ -119,7 +120,7 @@ class Product(models.Model):
     unit_price = models.FloatField()
     inventory = models.IntegerField(null=True, blank=True)
     category = models.ForeignKey(
-        Category, on_delete=models.CASCADE, related_name='products')
+        Category, null=True, blank=True, on_delete=models.SET_NULL, related_name='products')
     company = models.ForeignKey(
         Company, on_delete=models.CASCADE, related_name='products')
 
@@ -158,14 +159,16 @@ class Order(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     due_date = models.DateTimeField()
     customer = models.ForeignKey(
-        Customer, on_delete=models.CASCADE, related_name='orders')
+        Customer, null=True, blank=True, on_delete=models.SET_NULL, related_name='orders')
     payment_method = models.ForeignKey(
-        Payment, on_delete=models.CASCADE, related_name='orders')
+        Payment, null=True, on_delete=models.PROTECT, related_name='orders')
     company = models.ForeignKey(
         Company, on_delete=models.CASCADE, related_name='orders')
     status = models.CharField(max_length=2, choices=ORDER_STATUS_CHOICES)
     employee = models.ForeignKey(
-        Employee, null=True, blank=True, on_delete=models.SET_NULL, related_name='orders')
+        Employee, null=True, on_delete=models.SET_NULL, related_name='orders')
+    location = models.ForeignKey(
+        Location, null=True, blank=True, on_delete=models.SET_NULL, related_name='orders')
 
     def __str__(self):
         return f"Order {self.id}"
@@ -187,7 +190,7 @@ class OrderItem(models.Model):
     order = models.ForeignKey(
         Order, on_delete=models.CASCADE, related_name='order_items')
     product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name='order_items')
+        Product, null=True, on_delete=models.SET_NULL, related_name='order_items')
     company = models.ForeignKey(
         Company, on_delete=models.CASCADE, related_name='order_items')
 
