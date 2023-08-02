@@ -187,6 +187,7 @@ class OrderItem(models.Model):
         editable=False)
     amount = models.IntegerField()
     price = models.FloatField()
+    total_price = models.FloatField(default=0.0, editable=False)
     order = models.ForeignKey(
         Order, on_delete=models.CASCADE, related_name='order_items')
     product = models.ForeignKey(
@@ -199,6 +200,10 @@ class OrderItem(models.Model):
 
     def __repr__(self):
         return f"<OrderItem: {self.id}>"
+
+    def save(self, *args, **kwargs):
+        self.total_price = self.amount * self.price
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name_plural = "Order Items"
