@@ -1,5 +1,5 @@
 from django.db.models import Sum
-from rest_framework import permissions, viewsets
+from rest_framework import viewsets
 from rest_framework.response import Response
 
 from .filters import (BillFilter, CategoryFilter, CustomerFilter,
@@ -8,6 +8,7 @@ from .filters import (BillFilter, CategoryFilter, CustomerFilter,
 from .mixins import CompanyFilterMixin
 from .models import (Bill, Category, Customer, Employee, Job, Location, Order,
                      OrderItem, Payment, Product)
+from .permissions import CustomUserPermissions
 from .serializers import (BillSerializer, CategorySerializer,
                           CustomerSerializer, EmployeeSerializer,
                           JobSerializer, LocationSerializer,
@@ -16,66 +17,66 @@ from .serializers import (BillSerializer, CategorySerializer,
 
 
 class JobViewSet(CompanyFilterMixin, viewsets.ModelViewSet):
+    permission_classes = (CustomUserPermissions,)
     queryset = Job.objects.all()
     serializer_class = JobSerializer
     filterset_class = JobFilter
-    permission_classes = [permissions.DjangoModelPermissions]
 
 
 class EmployeeViewSet(CompanyFilterMixin, viewsets.ModelViewSet):
+    permission_classes = (CustomUserPermissions,)
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
     filterset_class = EmployeeFilter
-    permission_classes = [permissions.DjangoModelPermissions]
 
 
 class LocationViewSet(CompanyFilterMixin, viewsets.ModelViewSet):
+    permission_classes = (CustomUserPermissions,)
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
     filterset_class = LocationFilter
-    permission_classes = [permissions.DjangoModelPermissions]
 
 
 class CustomerViewSet(CompanyFilterMixin, viewsets.ModelViewSet):
+    permission_classes = (CustomUserPermissions,)
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
     filterset_class = CustomerFilter
-    permission_classes = [permissions.DjangoModelPermissions]
 
 
 class CategoryViewSet(CompanyFilterMixin, viewsets.ModelViewSet):
+    permission_classes = (CustomUserPermissions,)
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     filterset_class = CategoryFilter
-    permission_classes = [permissions.DjangoModelPermissions]
 
 
 class ProductViewSet(CompanyFilterMixin, viewsets.ModelViewSet):
+    permission_classes = (CustomUserPermissions,)
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filterset_class = ProductFilter
-    permission_classes = [permissions.DjangoModelPermissions]
 
 
 class PaymentViewSet(CompanyFilterMixin, viewsets.ModelViewSet):
+    permission_classes = (CustomUserPermissions,)
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     filterset_class = PaymentFilter
-    permission_classes = [permissions.DjangoModelPermissions]
 
 
 class OrderViewSet(CompanyFilterMixin, viewsets.ModelViewSet):
+    permission_classes = (CustomUserPermissions,)
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     filterset_class = OrderFilter
-    permission_classes = [permissions.DjangoModelPermissions]
 
 
 class OrderItemViewSet(CompanyFilterMixin, viewsets.ModelViewSet):
+    permission_classes = (CustomUserPermissions,)
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
     filterset_class = OrderItemFilter
-    permission_classes = [permissions.DjangoModelPermissions]
 
     def list(self, request, *args, **kwargs):
         group_by = request.query_params.get('group_by')
@@ -91,7 +92,7 @@ class OrderItemViewSet(CompanyFilterMixin, viewsets.ModelViewSet):
 
 
 class BillViewSet(CompanyFilterMixin, viewsets.ModelViewSet):
+    permission_classes = (CustomUserPermissions,)
     queryset = Bill.objects.all()
     serializer_class = BillSerializer
     filterset_class = BillFilter
-    permission_classes = [permissions.DjangoModelPermissions]
