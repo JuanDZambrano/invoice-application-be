@@ -5,10 +5,10 @@ from django.utils import timezone
 
 from accounts.models import Company
 
-from .constants import (BILL_STATUS_CHOICES, BILL_TYPE_CHOICES,
-                        ORDER_STATUS_CHOICES)
-from .models import (Bill, Category, Customer, Employee, Job, Location, Order,
-                     OrderItem, Payment, Product)
+from ..constants import (BILL_STATUS_CHOICES, BILL_TYPE_CHOICES,
+                         ORDER_STATUS_CHOICES)
+from ..models import (Bill, Category, Customer, Employee, Job, Location, Order,
+                      OrderItem, Payment, Product)
 
 
 class CompanyTest(TestCase):
@@ -57,9 +57,17 @@ class EmployeeTest(TestCase):
 class LocationTest(TestCase):
     @classmethod
     def setUpTestData(cls):
+        cls.company = Company.objects.create(
+            name="Test Company",
+            address="123 Test St",
+            phone="1234567890",
+            email="testcompany@email.com",
+            tax_id="123456789",
+        )
         cls.location = Location.objects.create(
             name="Test Location",
             address="123 Test St",
+            company=cls.company,
         )
 
     def test_location_creation(self):
