@@ -2,10 +2,11 @@ from django.db.models import Sum
 from rest_framework import viewsets
 from rest_framework.response import Response
 
+from config.mixins import CompanyFilterMixin
+
 from .filters import (BillFilter, CategoryFilter, CustomerFilter,
                       EmployeeFilter, JobFilter, LocationFilter, OrderFilter,
                       OrderItemFilter, PaymentFilter, ProductFilter)
-from .mixins import CompanyFilterMixin
 from .models import (Bill, Category, Customer, Employee, Job, Location, Order,
                      OrderItem, Payment, Product)
 from .permissions import CustomUserPermissions
