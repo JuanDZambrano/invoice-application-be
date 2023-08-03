@@ -2,6 +2,9 @@ import uuid
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
 
 from accounts.managers import CustomUserManager
 
@@ -34,7 +37,8 @@ class CustomUser(AbstractUser):
         primary_key=True,
         default=uuid.uuid4,
         editable=False)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    company = models.ForeignKey(
+        Company, null=True, blank=True, on_delete=models.CASCADE)
     user_type = models.CharField(max_length=2, choices=USER_TYPE_CHOICES)
 
     objects = CustomUserManager(company_model=Company)
@@ -44,3 +48,9 @@ class CustomUser(AbstractUser):
 
     def __repr__(self):
         return f"<CustomUser: {self.username}>"
+
+
+@receiver(post_save, sender=CustomUser)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
