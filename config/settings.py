@@ -30,13 +30,13 @@ INSTALLED_APPS = [
     # 3rd-party apps
     "rest_framework",
     "corsheaders",
-    "django_filters",
     "rest_framework.authtoken",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "dj_rest_auth",
-    "dj_rest_auth.registration",
+    'dj_rest_auth',
+    'allauth',
+    'allauth.account',
+    'dj_rest_auth.registration',
+    'allauth.socialaccount',
+    'django_filters',
 
     # Local
     "accounts.apps.AccountsConfig",
@@ -161,9 +161,18 @@ REST_FRAMEWORK = {
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 SITE_ID = 1
+REST_AUTH = {
+    'SESSION_LOGIN': False,
+}
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend"
+]
 
 # django-allauth config
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
