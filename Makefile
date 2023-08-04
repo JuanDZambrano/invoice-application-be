@@ -1,5 +1,5 @@
 up:
-		docker-compose up -d --build
+		docker-compose up web -d --build
 		sleep 1
 		docker-compose ps
 
@@ -20,3 +20,8 @@ migrate:
 
 logs: 
 		docker-compose logs -f
+
+up-full:
+		docker-compose up -d --build
+		sleep 1
+		docker-compose ps

@@ -20,6 +20,16 @@ services:
       - db
     environment:
       - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
+  app:
+    build: ../invoice-application-fe/
+    command: ["npm", "run", "dev"]
+    ports:
+      - 5173:5173
+    volumes:
+      - ../invoice-application-fe:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
   db:
     image: postgres:15
     volumes:
