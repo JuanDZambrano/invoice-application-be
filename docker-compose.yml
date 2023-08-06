@@ -22,7 +22,7 @@ services:
       - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
   app:
     build: ../invoice-application-fe/
-    command: ["npm", "run", "dev"]
+    command: ["npx", "vite", "--host", "0.0.0.0"]
     ports:
       - 5173:5173
     volumes:
