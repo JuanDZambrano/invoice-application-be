@@ -11,6 +11,7 @@ dj-rest-auth = "*"
 django-allauth = "*"
 django-filter = "*"
 django-cors-headers = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 

@@ -50,9 +50,12 @@ class OrderItemViewSetTestCase(APITestCase):
             product=self.product,
             company=self.company
         )
-        self.token = Token.objects.get(user=self.user)
+        # Login the user to set the JWT token in an HTTP-only cookie
         self.client = APIClient()
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        data = {'email': 'john@email.com', 'password': 'testpass123'}
+        login_response = self.client.post(reverse('rest_login'), data)
+        assert 'app-auth' in self.client.cookies  # Ensure the JWT cookie is set
+        assert login_response.status_code == 200
 
     def test_update_orderitem(self):
         data = {"amount": 20, "price": 30.0}
@@ -93,7 +96,7 @@ class OrderItemViewSetTestCase(APITestCase):
         client = APIClient()
         response = client.get(
             reverse('orderitem-detail', kwargs={'pk': self.order_item.pk}))
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_group_by_order(self):
         response = self.client.get(

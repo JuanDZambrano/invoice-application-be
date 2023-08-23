@@ -59,6 +59,8 @@ CORS_ALLOWED_ORIGINS = (
     "http://localhost:8000",
 )
 
+CORS_ALLOW_CREDENTIALS = True
+
 CSRF_TRUSTED_ORIGINS = ["http://localhost:5173"]
 
 ROOT_URLCONF = 'config.urls'
@@ -148,8 +150,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.TokenAuthentication",
+        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
     ],
     'DEFAULT_FILTER_BACKENDS': [
         "django_filters.rest_framework.DjangoFilterBackend",
@@ -161,13 +162,20 @@ REST_FRAMEWORK = {
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 SITE_ID = 1
+
 REST_AUTH = {
-    'SESSION_LOGIN': False,
+    'USE_JWT': True,
+    'JWT_AUTH_COOKIE': 'app-auth',
+    'JWT_AUTH_REFRESH_COOKIE': 'refresh-token',
 }
 
+JWT_AUTH_COOKIE_USE_CSRF = True  # Use CSRF protection for the cookie
+JWT_AUTH_COOKIE_SECURE = not DEBUG  # Use secure cookie in production
+JWT_AUTH_COOKIE_HTTP_ONLY = True  # Make the cookie HTTP-only
+
 AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend"
+    'allauth.account.auth_backends.AuthenticationBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 # django-allauth config
