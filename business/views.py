@@ -1,5 +1,7 @@
 from django.db.models import Sum
+from django.utils import timezone
 from rest_framework import viewsets
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from config.mixins import CompanyFilterMixin
@@ -90,6 +92,29 @@ class OrderItemViewSet(CompanyFilterMixin, viewsets.ModelViewSet):
             return Response(data)
         else:
             return super().list(request, *args, **kwargs)
+
+    @action(detail=False, methods=['GET'])
+    def total_order_value_in_date_range(self, request):
+        date_gte = request.query_params.get('date__gte')
+        date_lte = request.query_params.get('date__lte')
+
+        if date_gte and date_lte:
+            try:
+                date_gte = timezone.datetime.strptime(
+                    date_gte, '%d-%m-%y').date()
+                date_lte = timezone.datetime.strptime(
+                    date_lte, '%d-%m-%y').date()
+            except ValueError:
+                return Response({"error": "Invalid date format. Use dd-mm-yy"}, status=400)
+
+            total_value = OrderItem.objects.filter(
+                order__creation_date__gte=date_gte,
+                order__creation_date__lte=date_lte
+            ).aggregate(Sum('total_price'))
+
+            return Response({"total_value": total_value['total_price__sum']})
+
+        return Response({"error": "Both date__gte and date__lte must be provided"}, status=400)
 
 
 class BillViewSet(CompanyFilterMixin, viewsets.ModelViewSet):

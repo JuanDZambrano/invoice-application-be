@@ -1,9 +1,9 @@
 from datetime import datetime
 
+from django.db.models import Sum
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework import status
-from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient, APITestCase
 
 from accounts.models import CustomUser
@@ -127,3 +127,36 @@ class OrderItemViewSetTestCase(APITestCase):
     def test_list_orderitems(self):
         response = self.client.get(reverse('orderitem-list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_total_order_value_in_date_range(self):
+        # Create additional OrderItems for testing
+        OrderItem.objects.create(
+            amount=3,
+            price=20.0,
+            order=self.order,
+            product=self.product,
+            company=self.company
+        )
+        OrderItem.objects.create(
+            amount=2,
+            price=30.0,
+            order=self.order,
+            product=self.product,
+            company=self.company
+        )
+
+        str_gte = '01-01-23'
+        str_lte = '01-01-24'
+        date_gte = timezone.make_aware(datetime.strptime(str_gte, '%d-%m-%y'))
+        date_lte = timezone.make_aware(datetime.strptime(str_lte, '%d-%m-%y'))
+
+        url = reverse('orderitem-total-order-value-in-date-range')
+        response = self.client.get(
+            url, {'date__gte': str_gte, 'date__lte': str_lte})
+
+        expected_total_value = OrderItem.objects.filter(
+            order__creation_date__gte=date_gte,
+            order__creation_date__lte=date_lte
+        ).aggregate(Sum('total_price'))['total_price__sum']
+
+        self.assertEqual(response.data['total_value'], expected_total_value)
