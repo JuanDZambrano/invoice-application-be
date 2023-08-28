@@ -93,7 +93,7 @@ class OrderItemViewSet(CompanyFilterMixin, viewsets.ModelViewSet):
         else:
             return super().list(request, *args, **kwargs)
 
-    @action(detail=False, methods=['GET'])
+    @action(detail=False, methods=['GET'], url_path='total-order-value-in-date-range')
     def total_order_value_in_date_range(self, request):
         date_gte = request.query_params.get('date__gte')
         date_lte = request.query_params.get('date__lte')
