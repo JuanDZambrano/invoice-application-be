@@ -6,6 +6,7 @@ from rest_framework.response import Response
 
 from config.mixins import CompanyFilterMixin
 
+from .constants import BILL_STATUS_CHOICES, BILL_TYPE_CHOICES
 from .filters import (BillFilter, CategoryFilter, CustomerFilter,
                       EmployeeFilter, JobFilter, LocationFilter, OrderFilter,
                       OrderItemFilter, PaymentFilter, ProductFilter)
@@ -122,3 +123,38 @@ class BillViewSet(CompanyFilterMixin, viewsets.ModelViewSet):
     queryset = Bill.objects.all()
     serializer_class = BillSerializer
     filterset_class = BillFilter
+
+    @action(detail=False, methods=['GET'], url_path='total-bill-value-in-date-range-and-status')
+    def total_bill_value_in_date_range_and_status(self, request):
+        date_gte = request.query_params.get('date__gte')
+        date_lte = request.query_params.get('date__lte')
+        bill_status = request.query_params.get('status')
+        bill_type = request.query_params.get('type')
+
+        if date_gte and date_lte and bill_status:
+            try:
+                date_gte = timezone.datetime.strptime(
+                    date_gte, '%d-%m-%y').date()
+                date_lte = timezone.datetime.strptime(
+                    date_lte, '%d-%m-%y').date()
+            except ValueError:
+                return Response({"error": "Invalid date format. Use dd-mm-yy"}, status=400)
+
+            valid_statuses = [choice[0] for choice in BILL_STATUS_CHOICES]
+            if bill_status not in valid_statuses:
+                return Response({"error": "Invalid bill status"}, status=400)
+
+            valid_types = [choice[0] for choice in BILL_TYPE_CHOICES]
+            if bill_type not in valid_types:
+                return Response({"error": "Invalid bill type"}, status=400)
+
+            total_value = Bill.objects.filter(
+                due_date__gte=date_gte,
+                due_date__lte=date_lte,
+                status=bill_status,
+                type=bill_type
+            ).aggregate(Sum('amount'))
+
+            return Response({"total_value": total_value['amount__sum']})
+
+        return Response({"error": "date__gte, date__lte, and status must all be provided"}, status=400)
